@@ -13,7 +13,7 @@ test_FILE= 'test.xlsx'
 predict_FILE = 'credit_cash_predict.xlsx'
 
 
-raw_data = pd.read_excel(excel_PATH + code_DATA, encoding='utf-8')
+raw_data = pd.read_excel(excel_PATH + code_DATA, sheet_name='추출', encoding='utf-8')
 data_17 = pd.read_excel(excel_PATH + d17_train, encoding='utf-8')
 data_18 = pd.read_excel(excel_PATH + d18_train, encoding='utf-8')
 
@@ -34,8 +34,9 @@ num_17.columns = ['사업자번호']
 
 # 17년도 데이터 정제
 del(data_17['Unnamed: 0'])
-#del(data_17['사업자번호'])
-data_17['test'] = buyer_17['사업자번호'].astype('str')
+del(data_17['사업자번호'])
+data_17['사업자번호'] = buyer_17['사업자번호'].astype('str')
+data_17['업종코드'] = 0
 
 # 18년도 데이터 사업자번호 추출
 buyer_18 = data_18['사업자번호'].str.split('-', n=2, expand=True)
@@ -53,21 +54,24 @@ num_18 = pd.DataFrame(num_18)
 num_18.columns = ['사업자번호']
 
 # 업종코드 보유한 사업자번호 리스트
-code_data = raw_data['사업자번호']
+code_data = raw_data
 number = np.unique(code_data)
 number = pd.DataFrame(number)
 number.columns = ['사업자번호']
 number = number.astype('str')
+code_data = raw_data.astype('str')
 
 
 count = 0
-for i in range(len(buyer_17)):
-    print('%d / %d' % (i, len(buyer_17)))
-    for j in range(len(number)):
-        if buyer_17.loc[i, ['사업자번호']].item() == number.loc[j, ['사업자번호']].item():
+for i in range(len(data_17)):
+    print('%d / %d' % (i, len(data_17)))
+    for j in range(len(code_data)):
+        if data_17.loc[i, ['사업자번호']].item() == code_data.loc[j, ['사업자번호']].item():
             count = count + 1
             print(count)
+            data_17.loc[i, ['업종코드']] = code_data.loc[j, ['업종코드']]
 
+
+
+data_17.to_excel(test_PATH + test_FILE)
 print(count)
-
-
