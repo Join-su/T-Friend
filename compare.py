@@ -16,11 +16,18 @@ predict_FILE = 'tarin_industry_code.xlsx'
 
 def comp(comend, excel_PATH,T,df_1, loca, e_name, cate, cate2=0):
     list_mismatch = []
-    if (T == '계산서'):
-        # df = df_1.loc[:, ['품명', cate, cate2, loca]]
-        df = df_1.loc[:, [cate, cate2,'품명','업종코드','회사구분', loca]].astype('str')
-    else:
-        df = df_1.loc[:, [cate, cate2, loca]].astype('str')
+    if comend == 'train':
+        if (T == '계산서'):
+            # df = df_1.loc[:, ['품명', cate, cate2, loca]]
+            df = df_1.loc[:, [cate, cate2,'ITEM','CD_INDUSTRY','TP_BIZ',loca]].astype('str')
+        else:
+            df = df_1.loc[:, [cate, cate2,'TP_BIZ',loca]].astype('str')
+    else :
+        if (T == '계산서'):
+            # df = df_1.loc[:, ['품명', cate, cate2, loca]]
+            df = df_1.loc[:, [cate, cate2,'ITEM','CD_INDUSTRY','TP_BIZ']].astype('str')
+        else:
+            df = df_1.loc[:, [cate, cate2,'TP_BIZ']].astype('str')
 
     if comend == 'train':
         for i in range(len(df)):
@@ -46,12 +53,14 @@ def comp(comend, excel_PATH,T,df_1, loca, e_name, cate, cate2=0):
                         list_mismatch.append(i)
                     #######################################
 
+
         print(len(list_mismatch))
         df = df.drop(list_mismatch)
 
-        df = df.reset_index()
-        df = df.drop(['index'], axis=1)
+    df = df.reset_index()
+    df = df.drop(['index'], axis=1)
 
     print(df.head())
-    df.to_excel(excel_PATH + e_name)
+    if comend == 'test':
+        df.to_excel(excel_PATH + e_name)
     return df

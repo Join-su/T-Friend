@@ -24,9 +24,15 @@ class RF(object):
         if self.T == '계산서':
             raw_DATA = 'e_bill_2019_uniq.xlsx'
             save_file = 'new_RF_model.sav'
-            name = '사업자등록번호'
-            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1')
-            X = train.loc[:, [name,'업종코드', '사업자번호', 'cc']].copy()
+            name = 'NO_BIZ_C'
+            name2 = 'NO_BIZ'
+            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            #train.rename(columns={"NO_BIZ": "사업자등록번호"}, inplace=True)
+            #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
+            #train.rename(columns={"CD_INDUSTRY": "업종코드"}, inplace=True)
+            #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
+            X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY', 'TP_BIZ','NO_BIZ', 'cc']].copy()
+            print(X.head())
 
             '''
             X['회사구분'] = LabelEncoder().fit_transform(X['회사구분'])  # 종류별로 column 나// LabelEncoder() - 0~7로 라벨을 바꿔줌(one-hot 전 단계), fit_transform() - 변경시킬 데이터를 받아주는 역할
@@ -39,51 +45,74 @@ class RF(object):
         else:
             raw_DATA = 'cash_train.xlsx'
             save_file = 'cash_train_model.sav'
-            name = '회사등록번호'
-            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1')
-            X = train.loc[:, [name, '사업자번호', 'cc']].copy()
+            name = 'NO_BIZ_C'
+            name2 = 'NO_BIZ'
+            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            #train.rename(columns={"NO_BIZ": "회사등록번호"}, inplace=True)
+            #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
+            #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
+            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ', 'NO_BIZ', 'cc']].copy()
+
+        #print(X.head())
 
 
         try :###실전에서는 계정과목 존재 X
-            X_label = train.loc[:, ['계정과목']].copy()
+            X_label = train.loc[:, ['CD_ACCOUNT']].copy()
             X_label.dropna(inplace=True)
-            index = X_label['계정과목'].str.split(' ', n=1, expand=True)
+            index = X_label['CD_ACCOUNT'].str.split(' ', n=1, expand=True)
             lists = list(index)
             Y = index[0].copy()
         except AttributeError:
-            Y = train.loc[:, ['계정과목']].copy()
-
+            Y = train.loc[:, ['CD_ACCOUNT']].copy()
 
         try :
             num = X[name].str.split('-', n=2, expand=True)
-            num['거래처번호'] = num[0].str.cat(num[1])
-            num['거래처번호'] = num['거래처번호'].str.cat(num[2])
-
-            X = pd.concat([X, num['거래처번호']], axis=1)
+            num[name] = num[0].str.cat(num[1])
+            num[name] = num[name].str.cat(num[2])
+            del (X[name])
+            X = pd.concat([X, num[name]], axis=1)
+            #print('head',X.head())
             #X = X.rename(columns={'사업자등록번호':'거래처번호'})
         except AttributeError :
-            X['거래처번호'] = X[name]
+            X['NO_BIZ_C_new'] = X[name]
+            del(X[name])
+
+        #print(X.head())
 
 
-        del(X[name])
+        try :
+            num = X[name2].str.split('-', n=2, expand=True)
+            num[name2] = num[0].str.cat(num[1])
+            num[name2] = num[name2].str.cat(num[2])
+            del (X[name2])
+            X = pd.concat([X, num[name2]], axis=1)
+            #X = X.rename(columns={'사업자등록번호':'거래처번호'})
+        except AttributeError :
+            X['NO_BIZ_new'] = X[name2]
+            del(X[name2])
+
+        train.rename(columns={"NO_BIZ_new": "NO_BIZ"}, inplace=True)
+        train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
+
+        #print(X.head())
 
 
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=0)
 
 
-        loaded_model = pickle.load(open('C:\\Users\\ialab\\PycharmProjects\\Total\\RF_save\\' + save_file, 'rb'))
+        loaded_model = pickle.load(open('C:\\Users\\ialab\\Desktop\\T-Friend\\RF_save\\' + save_file, 'rb'))
 
 
         print(X.head())
         predict = loaded_model.predict(X)
-        '''
+
         print('predict : ', predict)
         df = pd.DataFrame(predict)
         df.columns = ['예측값']
         print(df)
         #df['정답'] = Y
         train = pd.concat([train, df['예측값']], axis=1)
-        '''
+
         train['예측값'] = predict.astype('int')
         train['예측정도'] = 0
 
@@ -99,10 +128,10 @@ class RF(object):
         print(f'Out-of-bag score estimate: {loaded_model.oob_score_:.3}')
         print(classification_report(y_train.astype('int'), loaded_model.predict(X_train).astype('int')))
 
-        '''
+
         result = loaded_model.score(X, Y) # acc 출력
         print(result)
-        fout = open('C:\\Users\\ialab\\Desktop\\T_Friend_data\\업종코드_매칭\\cash_test_result.txt', 'a')
+        fout = open('C:\\Users\\ialab\\Desktop\\T-Friend\\result\\cash_test_result.txt', 'a')
         print('tr18, te 18 : %f' %result, file=fout)
         fout.close()
-        '''
+

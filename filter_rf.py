@@ -13,7 +13,7 @@ class FILTER_RF(object):
             raw_DATA = 'cash_train.xlsx'
             e_name = '영수증_filter_rf.xlsx'
 
-        df = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1')
+        df = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
 
         list = []
         count = 0
