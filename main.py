@@ -24,26 +24,37 @@ PATH = "C:\\Users\\ialab\\Desktop\\T-Friend\\process\\"
 excel_PATH = 'C:\\Users\\ialab\\Desktop\\T-Friend\\pre\\'
 img_PATH = "C:\\Users\\ialab\\Desktop\\T-Friend\\img\\"
 path_json = 'C:\\Users\\ialab\\Desktop\\T-Friend\\json\\'
+RES_save_path = 'C:\\Users\\ialab\\Desktop\\T-Friend\\RES\\'
 
 
-def pre_data(proc, name):
+def pre_data(proc, name = ''):
 
     ret = 0
 
     if proc == 0 :
         path = 'C:\\Users\\ialab\\Desktop\\T-Friend\\REQ\\'  # 전달받은 자료 경로
+
+        file_list = os.listdir(path)
+        last_len  = len(file_list)-1
+        print('file : ', file_list[last_len])
+
+        name = file_list[last_len]
+
         j = JsonToExcel(path, name, proc)
         j.ToExecl()
         f = FileSeg()
         f.file_seg(PATH)
         f2 = FileSeg2()
         ret = f2.file_seg2(PATH)
+
+        return ret, file_list[last_len]
+
     if proc == 1 :
-        path = 'C:\\Users\\ialab\\Desktop\\T-Friend\\'  # 최종본 excel로 저장하는 경로
-        j = JsonToExcel(path, name, proc)
+        # 최종본 excel로 저장하는 경로
+        j = JsonToExcel(RES_save_path, name, proc)
         j.ToExecl()
 
-    return ret
+    return
 
 
 def model_part(filename, comend, re_file):
@@ -121,29 +132,35 @@ def model_part(filename, comend, re_file):
         tax_filename = 'cash_train.xlsx'
     elif filename == 'etc_file.xlsx':
         tax_filename = 'etc.xlsx'
-    f = tax(tax_filename)
+    f = tax(excel_PATH, tax_filename)
     f.tax_predict()
 
 
 def toRES(name, etc):
 
+    r_path = RES_save_path + name
+
     c = Convert(path_json, excel_PATH, PATH)
     c.convert(etc)
-    u = Utf8Apply(name, path_json)
+    u = Utf8Apply(r_path, path_json)
     u.utf_app()
 
 
 
-re_file = 'A_20190925173904.REQ'
-tr_file = 'A_test.RES'
+#re_file = 'A_20190925173904.REQ'
+#tr_file = 'A_test.RES'
 
-ret = pre_data(0,re_file)
+ret, last_file = pre_data(0)
 
-model_part('12', 'test', re_file)
-model_part('34', 'test', re_file)
+filter_name_list = last_file.split('.')
+tr_file = filter_name_list[0]+'.RES'
+
+model_part('12', 'test', last_file)
+model_part('34', 'test', last_file)
 if ret == 1 :
-    model_part('etc', 'test', re_file)
+    model_part('etc', 'test', last_file)
 
 toRES(tr_file, ret)
 
-pre_data(1,tr_file)
+pre_data(1, tr_file)
+

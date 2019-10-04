@@ -1,10 +1,11 @@
 import pandas as pd
 
-PATH = 'C:\\Users\\ialab\\Desktop\\T-Friend\\pre\\'
+#PATH = 'C:\\Users\\ialab\\Desktop\\T-Friend\\pre\\'
 
 
 class tax(object):
-    def __init__(self, filename):
+    def __init__(self, excel_PATH ,filename):
+        self.PATH = excel_PATH
         self.filename = filename
 
     def tax_predict(self) :
@@ -12,7 +13,7 @@ class tax(object):
         # filename = 'e_bill_2019_uniq.xlsx'
         # filename = 'cash_train.xlsx'
 
-        df = pd.read_excel(PATH + self.filename, encoding='utf-8', index_col=0)
+        df = pd.read_excel(self.PATH + self.filename, encoding='utf-8', index_col=0)
 
         txt_812 = ['항공', '여객기', '버스', '운송', '택시', '이비카드', '한국스마트']
         txt_252 = ['금융결제원']
@@ -44,15 +45,15 @@ class tax(object):
                         if any(j in s for s in string):
                             df.loc[i, ['CD_DEDU']] = 1
                             count += 1
-                #elif df.loc[i, ['CD_ACCOUNT']].item() == 250:
-                #    df.loc[i, ['CD_DEDU']] = ''
+                elif df.loc[i, ['CD_ACCOUNT']].item() == 250:
+                    df.loc[i, ['CD_DEDU']] = ''
                 else:
                     df.loc[i, ['CD_DEDU']] = 0
             elif df.loc[i, ['TP_BIZ_C']].item() == 2 or df.loc[i, ['TP_BIZ_C']].item() == 4:
                 if df.loc[i, ['CD_ACCOUNT']].item() == 146:
                     df.loc[i, ['CD_DEDU']] = 0
-                #elif df.loc[i, ['CD_ACCOUNT']].item() == 250:
-                #    df.loc[i, ['CD_DEDU']] = ''
+                elif df.loc[i, ['CD_ACCOUNT']].item() == 250:
+                    df.loc[i, ['CD_DEDU']] = ''
                 else:
                     df.loc[i, ['CD_DEDU']] = 1
             else :
@@ -78,4 +79,4 @@ class tax(object):
 
         print(df.head())
         print(count)
-        df.to_excel(PATH + self.filename, 'w', encoding='utf-8')
+        df.to_excel(self.PATH + self.filename, 'w', encoding='utf-8')
