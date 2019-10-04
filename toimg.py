@@ -90,8 +90,10 @@ class img(object):
         target = 'CD_ACCOUNT'
         if self.T == '계산서' :
             e_name = 'e_bill_2019_uniq.xlsx'
-        else :
+        elif self.T == '영수증':
             e_name = 'cash_train.xlsx'
+        elif self.T == '기타' :
+            e_name = 'etc.xlsx'
         df = comp(self.comend,self.excel_PATH, self.T, self.df, target, e_name, name, name2)
 
         # df = comp(df,target, 'e_bill_2019_uniq.xlsx',name)
@@ -100,7 +102,7 @@ class img(object):
         # print(df)
         print(df.head())
 
-        if self.T == '영수증' :
+        if self.T == '영수증' or self.T == '기타':
             pre_data = df.loc[:, [name,name2]].astype('str')
             pre_data[name] = pre_data[name].str.replace(' ','')
             pre_data[name2] = pre_data[name2].str.replace(' ','')

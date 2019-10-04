@@ -42,7 +42,7 @@ class RF(object):
             del (X['회사구분'])
             '''
 
-        else:
+        elif self.T == '영수증':
             raw_DATA = 'cash_train.xlsx'
             save_file = 'cash_train_model.sav'
             name = 'NO_BIZ_C'
@@ -53,6 +53,16 @@ class RF(object):
             #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
             X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ', 'NO_BIZ', 'cc']].copy()
 
+        elif self.T == '기타':
+            raw_DATA = 'etc.xlsx'
+            save_file = 'cash_train_model.sav'
+            name = 'NO_BIZ_C'
+            name2 = 'NO_BIZ'
+            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            #train.rename(columns={"NO_BIZ": "회사등록번호"}, inplace=True)
+            #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
+            #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
+            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ', 'NO_BIZ', 'cc']].copy()
         #print(X.head())
 
 
@@ -107,14 +117,15 @@ class RF(object):
         predict = loaded_model.predict(X)
 
         print('predict : ', predict)
-        df = pd.DataFrame(predict)
-        df.columns = ['예측값']
-        print(df)
+        #df = pd.DataFrame(predict)
+        #df.columns = ['예측값']
+        #print(df)
         #df['정답'] = Y
-        train = pd.concat([train, df['예측값']], axis=1)
+        #train = pd.concat([train, df['예측값']], axis=1)
 
-        train['예측값'] = predict.astype('int')
+        train['CD_ACCOUNT'] = predict.astype('int')
         train['예측정도'] = 0
+        #train['recommend'] = 0
 
         pre = loaded_model.predict_proba(X)
         for i in range(len(pre)):
@@ -126,12 +137,13 @@ class RF(object):
         # print('pre_len : ', len(pre[0]))
         # print(pre[1])
         print(f'Out-of-bag score estimate: {loaded_model.oob_score_:.3}')
-        print(classification_report(y_train.astype('int'), loaded_model.predict(X_train).astype('int')))
+        #print(classification_report(y_train.astype('int'), loaded_model.predict(X_train).astype('int')))
 
-
+        '''
         result = loaded_model.score(X, Y) # acc 출력
         print(result)
         fout = open('C:\\Users\\ialab\\Desktop\\T-Friend\\result\\cash_test_result.txt', 'a')
         print('tr18, te 18 : %f' %result, file=fout)
         fout.close()
+        '''
 

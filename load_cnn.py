@@ -246,8 +246,11 @@ class CNN(object):
             if self.T == '계산서' :
                 raw_DATA = 'e_bill_2019_uniq.xlsx'
 
-            else :
+            elif self.T == '영수증':
                 raw_DATA = 'cash_train.xlsx'
+
+            elif self.T == '기타' :
+                raw_DATA = 'etc.xlsx'
 
             data = pd.read_excel(self.img_full_name, encoding='utf-8', index_col=0)
             data['cc'] = 0
