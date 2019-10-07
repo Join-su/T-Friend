@@ -2,7 +2,7 @@ from keras.utils import np_utils
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, Activation
 from PIL import Image
-import win32com.client
+#import win32com.client
 
 import numpy as np
 import pandas as pd
@@ -161,7 +161,7 @@ class CNN(object):
 
             model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-            MODEL_DIR = "C:\\Users\\ialab\\Desktop\\T-Friend\\CNN_save\\"
+            MODEL_DIR = "/home/cent/Documents/github/T-friend/CNN_save/"
             if not os.path.exists(MODEL_DIR):
                 os.mkdir(MODEL_DIR)
 
@@ -221,9 +221,9 @@ class CNN(object):
 
             #
             if self.T == '계산서':
-                model = load_model('C:\\Users\\ialab\\Desktop\\T-Friend\\CNN_save\\categori_update_new.h5')
+                model = load_model('/home/cent/Documents/github/T-friend/CNN_save/categori_update_new.h5')
             else :
-                model = load_model('C:\\Users\\ialab\\Desktop\\T-Friend\\CNN_save\\categori_update_cash.h5')
+                model = load_model('/home/cent/Documents/github/T-friend/CNN_save/categori_update_cash.h5')
 
             '''
             emnist1_acc = model.evaluate(teX, teY)

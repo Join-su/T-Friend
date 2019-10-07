@@ -17,14 +17,14 @@ from file_seg_2 import FileSeg2
 
 from json_convert import Convert
 from ApplyUTF import Utf8Apply
+import pycurl, json
 
 
-
-PATH = "C:\\Users\\ialab\\Desktop\\T-Friend\\process\\"
-excel_PATH = 'C:\\Users\\ialab\\Desktop\\T-Friend\\pre\\'
-img_PATH = "C:\\Users\\ialab\\Desktop\\T-Friend\\img\\"
-path_json = 'C:\\Users\\ialab\\Desktop\\T-Friend\\json\\'
-RES_save_path = 'C:\\Users\\ialab\\Desktop\\T-Friend\\RES\\'
+PATH = "/home/cent/Documents/github/T-friend/process/"
+excel_PATH = '/home/cent/Documents/github/T-friend/pre/'
+img_PATH = "/home/cent/Documents/github/T-friend/img/"
+path_json = '/home/cent/Documents/github/T-friend/json/'
+RES_save_path = '/home/cent/Documents/github/T-friend/RES/'
 
 
 def pre_data(proc, name = ''):
@@ -32,7 +32,7 @@ def pre_data(proc, name = ''):
     ret = 0
 
     if proc == 0 :
-        path = 'C:\\Users\\ialab\\Desktop\\T-Friend\\REQ\\'  # 전달받은 자료 경로
+        path = '/home/cent/ssh_test/'  # 전달받은 자료 경로
 
         file_list = os.listdir(path)
         last_len  = len(file_list)-1
@@ -164,3 +164,14 @@ toRES(tr_file, ret)
 
 pre_data(1, tr_file)
 
+c = pycurl.Curl()
+#c.setopt(pycurl.URL, '//dev-tms.3friend.co.kr/api/notify')
+c.setopt(pycurl.URL, '220.149.235.55:3000/api/postSignal')
+c.setopt(pycurl.HTTPHEADER, ['Content-Type:application/json'])
+data = json.dumps({"key": "C0D58A096417AE8A9677DEA74064C8BA",
+                   "signal":last_file})
+c.setopt(pycurl.POST, 1)
+c.setopt(pycurl.POSTFIELDS, data)
+c.setopt(pycurl.VERBOSE, 1)
+c.perform()
+c.close()

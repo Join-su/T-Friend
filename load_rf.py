@@ -110,7 +110,7 @@ class RF(object):
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=0)
 
 
-        loaded_model = pickle.load(open('C:\\Users\\ialab\\Desktop\\T-Friend\\RF_save\\' + save_file, 'rb'))
+        loaded_model = pickle.load(open('/home/cent/Documents/github/T-friend/RF_save/' + save_file, 'rb'))
 
 
         print(X.head())
