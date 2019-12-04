@@ -67,6 +67,7 @@ class RF(object):
 
             #X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
             X = train.loc[:, ['NO_BIZ_C', 'NO_BIZ', 'cc']].copy()
+            #X = train.loc[:, ['NO_BIZ', 'cc']].copy()
         #print(X.head())
 
 
@@ -106,6 +107,7 @@ class RF(object):
             del(X[name2])
 
         train.rename(columns={"NO_BIZ_new": "NO_BIZ"}, inplace=True)
+        #if self.T != '기타':
         train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
 
         #print(X.head())

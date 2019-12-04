@@ -41,15 +41,16 @@ class JsonToExcel(object):
                 print('일반')
                 pd_data['TP_BIZ_C'] = ''
 
+            PATH = '/home/cent/Documents/github/T-friend/'
 
             if self.proc == 0:
                 pd_data['CD_ACCOUNT'] = ''
                 pd_data['CD_ACCOUNT_R'] = ''
                 pd_data['CD_DEDU'] = ''
-                pd_data.to_excel('test_file.xlsx', 'w', encoding='utf-8')
+                pd_data.to_excel(PATH + 'test_file.xlsx', 'w', encoding='utf-8')
             elif self.proc == 1:
                 print("final : ",pd_data.head())
-                pd_data.to_excel('result_file.xlsx', 'w', encoding='utf-8')
+                pd_data.to_excel(PATH + 'result_file.xlsx', 'w', encoding='utf-8')
 
 
             # print(pd_data)

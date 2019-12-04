@@ -104,9 +104,6 @@ def model_part(filename, comend, re_file):
     b.main_cnn()
 
     if comend == 'train':
-       b = CNN(img_PATH=img_PATH, T=T, excel_PATH=excel_PATH, img_full_name=img_full_name, comend='train')
-       b.main_cnn()
-    else:
        b = CNN(img_PATH=img_PATH, T=T, excel_PATH=excel_PATH, img_full_name=img_full_name, comend='test')
        b.main_cnn()
 
@@ -188,7 +185,7 @@ if ret == 1 :
 
 toRES(tr_file, ret)
 
-signal_in(tr_file)
+#signal_in(tr_file)
 
 pre_data(1, tr_file)
 

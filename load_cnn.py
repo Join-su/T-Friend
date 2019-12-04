@@ -264,6 +264,7 @@ class CNN(object):
 
                 # print(labels_val[pre])
 
+
             data.to_excel(self.excel_PATH + raw_DATA)
 
             # model = load_model('./model_ResNet/model_num-%s.h5' % num)
