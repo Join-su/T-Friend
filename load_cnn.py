@@ -25,7 +25,7 @@ labels_val = [141, 146, 150, 166, 172, 192, 194, 196, 198, 202, 209, 211, 254, 2
                       727, 809, 812, 813, 814, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 831]
 
 class CNN(object):
-    def __init__(self, img_PATH ,T, excel_PATH,img_full_name, comend):
+    def __init__(self, img_PATH ,T, excel_PATH, img_full_name, comend):
         self.img_PATH = img_PATH
         self.T = T
         self.excel_PATH = excel_PATH
@@ -188,7 +188,7 @@ class CNN(object):
 
             print(history.history.keys())
 
-        else :
+        elif self.comend == 'test':
 
             labels_val = list(set(labels_val))
             labels_val.sort()
@@ -223,7 +223,7 @@ class CNN(object):
             #
             if self.T == '계산서':
                 model = load_model('/home/cent/Documents/github/save_file/categori_update_new.h5')
-            else :
+            else:
                 model = load_model('/home/cent/Documents/github/save_file/categori_update_cash.h5')
 
             '''

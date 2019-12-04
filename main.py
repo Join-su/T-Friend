@@ -104,10 +104,10 @@ def model_part(filename, comend, re_file):
     b.main_cnn()
 
     if comend == 'train':
-       b = CNN(img_PATH, T, excel_PATH, img_full_name, 'train')
+       b = CNN(img_PATH=img_PATH, T=T, excel_PATH=excel_PATH, img_full_name=img_full_name, comend='train')
        b.main_cnn()
     else:
-       b = CNN(img_PATH, T, excel_PATH, img_full_name, 'test')
+       b = CNN(img_PATH=img_PATH, T=T, excel_PATH=excel_PATH, img_full_name=img_full_name, comend='test')
        b.main_cnn()
 
     ### CNN정확도 낮은 것 따로 빼놓음
