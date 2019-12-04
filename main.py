@@ -173,19 +173,32 @@ def signal_in(tr_file):
 #re_file = 'A_20190925173904.REQ'
 #tr_file = 'A_test.RES'
 
-ret, last_file = pre_data(0)
+comment = 'test' # 'test' or 'train'
+ret = 0 #  etc 학습시 1
 
-filter_name_list = last_file.split('.')
-tr_file = filter_name_list[0]+'.RES'
+if comment == 'test':
+    ret, last_file = pre_data(0)
 
-model_part('12', 'test', last_file)
-model_part('34', 'test', last_file)
-if ret == 1 :
-    model_part('etc', 'test', last_file)
+    filter_name_list = last_file.split('.')
+    tr_file = filter_name_list[0]+'.RES'
 
-toRES(tr_file, ret)
+    model_part('12', comment, last_file)
+    model_part('34', comment, last_file)
+    if ret == 1 :
+        model_part('etc', comment, last_file)
 
-#signal_in(tr_file)
+    toRES(tr_file, ret)
 
-pre_data(1, tr_file)
+    signal_in(tr_file)
+
+    pre_data(1, tr_file)
+    
+else: # train 시
+
+    model_part('12', comment, last_file)
+    model_part('34', comment, last_file)
+    if ret == 1 :
+        model_part('etc', comment, last_file)
+
+    
 
