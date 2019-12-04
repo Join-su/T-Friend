@@ -36,7 +36,7 @@ class JsonToExcel(object):
 
             if a ==0 :
                 print('일반')
-                pd_data['TP_BIZ'] = '1'
+                #pd_data['TP_BIZ'] = '1'
             if b ==0 :
                 print('일반')
                 pd_data['TP_BIZ_C'] = ''
@@ -48,7 +48,7 @@ class JsonToExcel(object):
                 pd_data['CD_DEDU'] = ''
                 pd_data.to_excel('test_file.xlsx', 'w', encoding='utf-8')
             elif self.proc == 1:
-                print("result")
+                print("final : ",pd_data.head())
                 pd_data.to_excel('result_file.xlsx', 'w', encoding='utf-8')
 
 

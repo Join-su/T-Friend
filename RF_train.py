@@ -33,7 +33,8 @@ class RF_train(object):
 
             train = pd.read_excel(self.excel_PATH + new_data, encoding='utf-8')
 
-            X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY', 'TP_BIZ','NO_BIZ', 'cc']].copy()
+            #X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY', 'TP_BIZ_C','NO_BIZ', 'cc']].copy()
+            X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY','NO_BIZ', 'cc']].copy()
             X_label = train.loc[:, ['CD_ACCOUNT']].copy()
         else :
             new_data = 'cash_train.xlsx'
@@ -41,7 +42,7 @@ class RF_train(object):
 
             train = pd.read_excel(self.excel_PATH + new_data, encoding='utf-8')
 
-            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ', 'NO_BIZ', 'cc']].copy()
+            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
             X_label = train.loc[:, ['CD_ACCOUNT']].copy()
 
 
@@ -128,7 +129,7 @@ class RF_train(object):
         '''
 
         fout = open(code_PATH + 'result.txt', 'a')
-        pickle.dump(model, open('C:\\Users\\ialab\\Desktop\\T-Friend\\RF_save\\' + filename, 'wb'))
+        pickle.dump(model, open('/home/cent/Documents/github/save_file/' + filename, 'wb'))
         # model = DecisionTreeClassifier(criterion='entropy', max_depth=3, min_samples_leaf=5).fit(X_train, y_train)
         # accuracy = accuracy_score(y_test, model.predict(X_test))
 

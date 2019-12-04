@@ -31,7 +31,9 @@ class RF(object):
             #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
             #train.rename(columns={"CD_INDUSTRY": "업종코드"}, inplace=True)
             #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
-            X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY', 'TP_BIZ','NO_BIZ', 'cc']].copy()
+
+            #X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY', 'TP_BIZ_C','NO_BIZ', 'cc']].copy()
+            X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY','NO_BIZ', 'cc']].copy()
             print(X.head())
 
             '''
@@ -51,7 +53,7 @@ class RF(object):
             #train.rename(columns={"NO_BIZ": "회사등록번호"}, inplace=True)
             #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
             #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
-            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ', 'NO_BIZ', 'cc']].copy()
+            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
 
         elif self.T == '기타':
             raw_DATA = 'etc.xlsx'
@@ -62,7 +64,9 @@ class RF(object):
             #train.rename(columns={"NO_BIZ": "회사등록번호"}, inplace=True)
             #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
             #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
-            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ', 'NO_BIZ', 'cc']].copy()
+
+            #X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
+            X = train.loc[:, ['NO_BIZ_C', 'NO_BIZ', 'cc']].copy()
         #print(X.head())
 
 
@@ -110,7 +114,7 @@ class RF(object):
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=0)
 
 
-        loaded_model = pickle.load(open('/home/cent/Documents/github/T-friend/RF_save/' + save_file, 'rb'))
+        loaded_model = pickle.load(open('/home/cent/Documents/github/save_file/' + save_file, 'rb'))
 
 
         print(X.head())

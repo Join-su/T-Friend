@@ -19,15 +19,17 @@ def comp(comend, excel_PATH,T,df_1, loca, e_name, cate, cate2=0):
     if comend == 'train':
         if (T == '계산서'):
             # df = df_1.loc[:, ['품명', cate, cate2, loca]]
-            df = df_1.loc[:, [cate, cate2,'ITEM','CD_INDUSTRY','TP_BIZ',loca]].astype('str')
+            #df = df_1.loc[:, [cate, cate2,'ITEM','CD_INDUSTRY','TP_BIZ_C',loca]].astype('str')
+            df = df_1.loc[:, [cate, cate2,'NM_ITEM','CD_INDUSTRY',loca]].astype('str')
         else:
-            df = df_1.loc[:, [cate, cate2,'TP_BIZ',loca]].astype('str')
+            df = df_1.loc[:, [cate, cate2,'TP_BIZ_C',loca]].astype('str')
     else :
         if (T == '계산서'):
             # df = df_1.loc[:, ['품명', cate, cate2, loca]]
-            df = df_1.loc[:, [cate, cate2,'ITEM','CD_INDUSTRY','TP_BIZ']].astype('str')
+            #df = df_1.loc[:, [cate, cate2,'ITEM','CD_INDUSTRY','TP_BIZ_C']].astype('str')
+            df = df_1.loc[:, [cate, cate2,'NM_ITEM','CD_INDUSTRY']].astype('str')
         else:
-            df = df_1.loc[:, [cate, cate2,'TP_BIZ']].astype('str')
+            df = df_1.loc[:, [cate, cate2,'TP_BIZ_C']].astype('str')
 
     if comend == 'train':
         for i in range(len(df)):

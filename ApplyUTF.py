@@ -17,6 +17,6 @@ class Utf8Apply(object):
 
         with open(file) as json_file:
             data = json.load(json_file)
-            print(data)
+            #print(data)
             with open(self.DATA_NAME, 'w', encoding='UTF8') as write_file:
                 write_file.write(json.dumps(data, ensure_ascii=False))

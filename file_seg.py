@@ -19,7 +19,8 @@ class FileSeg():
 
         for i in range(len(df)):
             # print(df.loc[i,['CD_SCRP']].values)
-            name = df.loc[i, ['CD_SCRP']].item()
+            if df.loc[i,['TP_BIZ_C']].isnull().values.any():df.loc[i,['TP_BIZ_C']]=0
+            name = df.loc[i, ['CD_TRAN']].item()
             name_list = list(name)
             last_num = len(name_list) - 1
             if name_list[last_num] == 'n':
@@ -35,7 +36,7 @@ class FileSeg():
         df_out = df_out.reset_index()
         df_out = df_out.drop(['index'], axis=1)
         df_out['CD_ACCOUNT'] = 401
-        df_out['CD_DEDU'] = 0
+        #df_out['CD_DEDU'] = 0
 
         #save_path = 'C:\\Users\\ialab\\Desktop\\T-Friend\\process\\'
 

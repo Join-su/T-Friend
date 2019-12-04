@@ -109,7 +109,7 @@ class img(object):
             if self.comend == 'train':
                 pre_data[target] = df[target].astype('str')
         else :
-            name = 'ITEM'
+            name = 'NM_ITEM'
             pre_data = df.loc[:, [name]].astype('str')
             pre_data[name] = pre_data[name].str.replace(' ', '')
             if self.comend == 'train':

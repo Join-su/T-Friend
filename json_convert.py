@@ -16,10 +16,12 @@ class Convert():
 
         file_34 = 'cash_train.xlsx'
         data1 = pd.read_excel(self.path1 + file_34, index_col=0)
+	
 
         #path3 = 'C:\\Users\\ialab\\Desktop\\T-Friend\\process\\'
         file_extra = 'out_file.xlsx'
         data3 = pd.read_excel(self.path3 + file_extra, index_col=0)
+	
 
         if etc == 1:
             file_ex = 'etc.xlsx'
@@ -33,10 +35,10 @@ class Convert():
                                force_ascii=False)
             return
 
-        data_merge = pd.concat([data, data1, data3], axis=0)
+        data_merge = pd.concat([data, data1,data3], axis=0, sort = False)
         data_merge = data_merge.reset_index()
         data_merge = data_merge.drop(['index'], axis=1)
-        print(data_merge)
+        print("data_merge : ", data_merge)
         data_merge.to_json(self.path_json + 'RES.json', orient='records', double_precision=15, default_handler=callable,
                            force_ascii=False)
 

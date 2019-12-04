@@ -139,7 +139,8 @@ class CNN(object):
             trY = self.dence_to_one_hot(trY, labels_count)
             #teY = self.dence_to_one_hot(teY, labels_count)
 
-            EPOCH = 400
+            if self.T == '계산서': EPOCH = 400
+            else : EPOCH = 800
             BATCH_SIZE = 128
             VERBOSE = 2
 
@@ -161,7 +162,7 @@ class CNN(object):
 
             model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-            MODEL_DIR = "/home/cent/Documents/github/T-friend/CNN_save/"
+            MODEL_DIR = "/home/cent/Documents/github/save_file/"
             if not os.path.exists(MODEL_DIR):
                 os.mkdir(MODEL_DIR)
 
@@ -221,9 +222,9 @@ class CNN(object):
 
             #
             if self.T == '계산서':
-                model = load_model('/home/cent/Documents/github/T-friend/CNN_save/categori_update_new.h5')
+                model = load_model('/home/cent/Documents/github/save_file/categori_update_new.h5')
             else :
-                model = load_model('/home/cent/Documents/github/T-friend/CNN_save/categori_update_cash.h5')
+                model = load_model('/home/cent/Documents/github/save_file/categori_update_cash.h5')
 
             '''
             emnist1_acc = model.evaluate(teX, teY)

@@ -17,14 +17,14 @@ from file_seg_2 import FileSeg2
 
 from json_convert import Convert
 from ApplyUTF import Utf8Apply
-import pycurl, json
+import requests, json
 
 
 PATH = "/home/cent/Documents/github/T-friend/process/"
 excel_PATH = '/home/cent/Documents/github/T-friend/pre/'
 img_PATH = "/home/cent/Documents/github/T-friend/img/"
 path_json = '/home/cent/Documents/github/T-friend/json/'
-RES_save_path = '/home/cent/Documents/github/T-friend/RES/'
+RES_save_path = '/T-friend_data/RES/'
 
 
 def pre_data(proc, name = ''):
@@ -32,7 +32,7 @@ def pre_data(proc, name = ''):
     ret = 0
 
     if proc == 0 :
-        path = '/home/cent/ssh_test/'  # 전달받은 자료 경로
+        path = '/T-friend_data/REQ/'  # 전달받은 자료 경로
 
         file_list = os.listdir(path)
         last_len  = len(file_list)-1
@@ -50,9 +50,8 @@ def pre_data(proc, name = ''):
         return ret, file_list[last_len]
 
     if proc == 1 :
-        # 최종본 excel로 저장하는 경로
-        j = JsonToExcel(RES_save_path, name, proc)
-        j.ToExecl()
+        j2 = JsonToExcel(RES_save_path, name, proc)
+        j2.ToExecl()
 
     return
 
@@ -104,26 +103,34 @@ def model_part(filename, comend, re_file):
     b = CNN(img_PATH, T, excel_PATH, img_full_name, comend)
     b.main_cnn()
 
+    if comend == 'train':
+       b = CNN(img_PATH, T, excel_PATH, img_full_name, 'train')
+       b.main_cnn()
+    else:
+       b = CNN(img_PATH, T, excel_PATH, img_full_name, 'test')
+       b.main_cnn()
+
     ### CNN정확도 낮은 것 따로 빼놓음
     filter_name = filter_name + '_c'
     print('cnn_filter : '+filter_name)
     c = FILTER_CNN(T, excel_PATH, filter_name)
     c.main_f_cnn()
 
+    d1 = RF_train(T, excel_PATH)
+    d2 = RF(T, excel_PATH)
+
     if comend == 'train':
         ### 해당 종류의 RF 불러와서 결과 예측
-        d1 = RF_train(T, excel_PATH)
         d1.main_RF_train()
     else:
         ### 해당 종류의 RF 불러와서 결과 예측
-        d2 = RF(T, excel_PATH)
         d2.main_RF()
 
-    ### RF정화도가 낮은 것 따로 빼놓음
-    filter_name = filter_name + '_R'
-    print('RF_filter : '+filter_name)
-    e = FILTER_RF(T, excel_PATH, filter_name)
-    e.main_f_rf()
+        ### RF정화도가 낮은 것 따로 빼놓음
+        filter_name = filter_name + '_R'
+        print('RF_filter : '+filter_name)
+        e = FILTER_RF(T, excel_PATH, filter_name)
+        e.main_f_rf()
 
     ### 공제/불공제 예측 ###
     if filename == '12_file.xlsx':
@@ -145,6 +152,25 @@ def toRES(name, etc):
     u = Utf8Apply(r_path, path_json)
     u.utf_app()
 
+def signal_in(tr_file):
+    url = "https://dev-tms.3friend.co.kr/api/notify"
+
+    payload = {"signal": tr_file}
+    headers = {
+        'Content-Type': "application/x-www-form-urlencoded",
+        'User-Agent': "PostmanRuntime/7.17.1",
+        'Accept': "*/*",
+        'Cache-Control': "no-cache",
+        'Postman-Token': "3d81ff59-a7e8-4a4e-8eee-109a54966340,e56720a2-44f5-4e21-875f-a150a93bca26",
+        'Host': "dev-tms.3friend.co.kr",
+        'Accept-Encoding': "gzip, deflate",
+        'Content-Length': "39",
+        'Cookie': "connect.sid=s%3A58t88RrAn1R8vBLeCyNhbVLrP9qyUotL.2nglp4FoBS2ZYQjU%2BJR8WBDs20JzvtUvhsz9yi%2F31G8",
+        'Connection': "keep-alive",
+        'cache-control': "no-cache"
+        }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
 
 
 #re_file = 'A_20190925173904.REQ'
@@ -162,16 +188,7 @@ if ret == 1 :
 
 toRES(tr_file, ret)
 
+signal_in(tr_file)
+
 pre_data(1, tr_file)
 
-c = pycurl.Curl()
-#c.setopt(pycurl.URL, '//dev-tms.3friend.co.kr/api/notify')
-c.setopt(pycurl.URL, '220.149.235.55:3000/api/postSignal')
-c.setopt(pycurl.HTTPHEADER, ['Content-Type:application/json'])
-data = json.dumps({"key": "C0D58A096417AE8A9677DEA74064C8BA",
-                   "signal":last_file})
-c.setopt(pycurl.POST, 1)
-c.setopt(pycurl.POSTFIELDS, data)
-c.setopt(pycurl.VERBOSE, 1)
-c.perform()
-c.close()

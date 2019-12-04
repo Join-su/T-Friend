@@ -31,7 +31,7 @@ class FILTER_CNN(object):
 
         df_1 = df.iloc[list,:]
 
-        df_1.to_excel('C:\\Users\\ialab\\Desktop\\T-Friend\\filter_cnn\\' + e_name)
+        df_1.to_excel('/home/cent/Documents/github/T-friend/filter_cnn/' + e_name)
 
 
 

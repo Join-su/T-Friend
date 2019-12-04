@@ -20,7 +20,7 @@ class FileSeg2():
 
         for i in range(len(df)):
             # print(df.loc[i,['CD_SCRP']].values)
-            name = df.loc[i, ['CD_SCRP']].item()
+            name = df.loc[i, ['CD_TRAN']].item()
             if name == 'home1in' or name == 'home2in':
                 C_12.append(i)
             elif name == 'home3in' or name == 'home4in':
