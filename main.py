@@ -174,7 +174,7 @@ def signal_in(tr_file):
 #tr_file = 'A_test.RES'
 
 comment = 'test' # 'test' or 'train'
-ret = 0 #  etc 학습시 1
+train_data = '12' # '12' or '34' or 'etc'
 
 if comment == 'test':
     ret, last_file = pre_data(0)
@@ -195,10 +195,8 @@ if comment == 'test':
     
 else: # train 시
 
-    model_part('12', comment, last_file)
-    model_part('34', comment, last_file)
-    if ret == 1 :
-        model_part('etc', comment, last_file)
+    model_part(train_data, comment, last_file)
+
 
     
 
