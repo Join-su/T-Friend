@@ -4,11 +4,11 @@ import pandas as pd
 
 
 class FileSeg():
-    def file_seg(self, save_path):
+    def file_seg(self, save_path, path_2):
 
         filename = 'test_file.xlsx'
 
-        df = pd.read_excel(filename, encoding='utf-8', index_col=0)
+        df = pd.read_excel(path_2 + filename, encoding='utf-8', index_col=0)
         print(df.head())
 
         # pre_data = df.loc[:, [name,name2]].astype('str')

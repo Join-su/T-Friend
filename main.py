@@ -9,6 +9,7 @@ from filter_rf import FILTER_RF
 from Tax import tax
 import pandas as pd
 import os
+import sys
 
 
 from excel_file_creator import JsonToExcel
@@ -25,6 +26,7 @@ excel_PATH = '/home/cent/Documents/github/T-friend/pre/'
 img_PATH = "/home/cent/Documents/github/T-friend/img/"
 path_json = '/home/cent/Documents/github/T-friend/json/'
 RES_save_path = '/T-friend_data/RES/'
+path_2 = "/home/cent/Documents/github/T-friend/"
 
 
 def pre_data(proc, name = ''):
@@ -34,23 +36,23 @@ def pre_data(proc, name = ''):
     if proc == 0 :
         path = '/T-friend_data/REQ/'  # 전달받은 자료 경로
 
-        file_list = os.listdir(path)
-        last_len  = len(file_list)-1
-        print('file : ', file_list[last_len])
+        #file_list = os.listdir(path)
+        #last_len  = len(file_list)-1
+        #print('file : ', file_list[last_len])
 
-        name = file_list[last_len]
+        #name = file_list[last_len]
 
-        j = JsonToExcel(path, name, proc)
+        j = JsonToExcel(path,path_2, name, proc)
         j.ToExecl()
         f = FileSeg()
-        f.file_seg(PATH)
+        f.file_seg(PATH, path_2)
         f2 = FileSeg2()
         ret = f2.file_seg2(PATH)
 
-        return ret, file_list[last_len]
+        return ret, name
 
     if proc == 1 :
-        j2 = JsonToExcel(RES_save_path, name, proc)
+        j2 = JsonToExcel(RES_save_path,path_2, name, proc)
         j2.ToExecl()
 
     return
@@ -169,34 +171,35 @@ def signal_in(tr_file):
 
     response = requests.request("POST", url, data=payload, headers=headers)
 
+def main(string):
+   #re_file = 'A_20190925173904.REQ'
+   #tr_file = 'A_test.RES'
 
-#re_file = 'A_20190925173904.REQ'
-#tr_file = 'A_test.RES'
+   comment = 'test' # 'test' or 'train'
+   train_data = '12' # '12' or '34' or 'etc'
 
-comment = 'test' # 'test' or 'train'
-train_data = '12' # '12' or '34' or 'etc'
+   if comment == 'test':
+       ret, last_file = pre_data(0,string)
 
-if comment == 'test':
-    ret, last_file = pre_data(0)
+       filter_name_list = last_file.split('.')
+       tr_file = filter_name_list[0]+'.RES'
 
-    filter_name_list = last_file.split('.')
-    tr_file = filter_name_list[0]+'.RES'
+       model_part('12', comment, last_file)
+       model_part('34', comment, last_file)
+       if ret == 1 :
+           model_part('etc', comment, last_file)
 
-    model_part('12', comment, last_file)
-    model_part('34', comment, last_file)
-    if ret == 1 :
-        model_part('etc', comment, last_file)
+       toRES(tr_file, ret)
 
-    toRES(tr_file, ret)
+       #signal_in(tr_file)
 
-    signal_in(tr_file)
-
-    pre_data(1, tr_file)
+       pre_data(1, tr_file)
     
-else: # train 시
+   else: # train 시
 
-    model_part(train_data, comment, last_file)
+       model_part(train_data, comment, last_file)
 
 
     
-
+if __name__ == "__main__" :
+   main(sys.argv[1]) 

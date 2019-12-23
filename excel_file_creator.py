@@ -4,10 +4,11 @@ import pandas as pd
 
 
 class JsonToExcel(object):
-    def __init__(self, path, name, proc):
+    def __init__(self, path, path_2, name, proc):
         self.path = path
         self.name = name
         self.proc = proc
+        self.path_2 = path_2
 
     def ToExecl(self):
 
