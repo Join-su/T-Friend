@@ -171,12 +171,12 @@ def signal_in(tr_file):
 
     response = requests.request("POST", url, data=payload, headers=headers)
 
-def main(string):
+def main(string, comment = 'test', train_data='12'):
    #re_file = 'A_20190925173904.REQ'
    #tr_file = 'A_test.RES'
 
-   comment = 'test' # 'test' or 'train'
-   train_data = '12' # '12' or '34' or 'etc'
+   #comment = 'test' # 'test' or 'train'
+   #train_data = '12' # '12' or '34' or 'etc'
 
    if comment == 'test':
        ret, last_file = pre_data(0,string)
@@ -196,10 +196,11 @@ def main(string):
        pre_data(1, tr_file)
     
    else: # train 시
-
+       if train_data == '12':
+          
        model_part(train_data, comment, last_file)
 
 
     
 if __name__ == "__main__" :
-   main(sys.argv[1]) 
+   main(sys.argv[1], sys.argv[2], sys.argv[3]) 

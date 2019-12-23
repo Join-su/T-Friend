@@ -1,14 +1,14 @@
 import pandas as pd
 
-path = "C:\\Users\\ialab\\Desktop\\T-Friend\\train_data\\"
-save_path = "C:\\Users\\ialab\\Desktop\\T-Friend\\process\\"
+path = "/home/cent/Documents/github/T-friend/train_data/"
+save_path = "/home/cent/Documents/github/T-friend/process/"
 
 T = '계산서'
 
 if T == '계산서' :
 
-    filename_1 = '계산서_Train_data - 복사본.xlsx'
-    filename_2 = 'e_bill_2019_uniq.xlsx'
+    filename_1 = 'e_train_data_test_1.xlsx'
+    filename_2 = 'e_train_data_test_2.xlsx'
 
     df_1 = pd.read_excel(path + filename_1, encoding='utf-8', index_col=0)
     df_2 = pd.read_excel(path + filename_2, encoding='utf-8', index_col=0)
@@ -18,8 +18,8 @@ if T == '계산서' :
 
 elif T == '영수증' :
 
-    filename_1 = '신용카드_Train_data - 복사본.xlsx'
-    filename_2 = 'cash_train.xlsx'
+    filename_1 = 'card_train_data_test_1.xlsx'
+    filename_2 = 'card_train_data_test_2.xlsx'
 
     df_1 = pd.read_excel(path + filename_1, encoding='utf-8', index_col=0)
     df_2 = pd.read_excel(path + filename_2, encoding='utf-8', index_col=0)
