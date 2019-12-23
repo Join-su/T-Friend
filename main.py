@@ -1,5 +1,6 @@
 #import load_cnn
 #import load_rf
+from excel_join import ExcelJoin
 from load_cnn import CNN
 from load_rf import RF
 from RF_train import RF_train
@@ -58,7 +59,7 @@ def pre_data(proc, name = ''):
     return
 
 
-def model_part(filename, comend, re_file):
+def model_part(filename, comend, re_file='train'):
     ### 파일 불러오기(pandas)
 
 
@@ -138,8 +139,9 @@ def model_part(filename, comend, re_file):
         tax_filename = 'cash_train.xlsx'
     elif filename == 'etc_file.xlsx':
         tax_filename = 'etc.xlsx'
-    f = tax(excel_PATH, tax_filename)
-    f.tax_predict()
+    if comend != 'train':
+        f = tax(excel_PATH, tax_filename)
+        f.tax_predict()
 
 
 def toRES(name, etc):
@@ -196,9 +198,9 @@ def main(string, comment = 'test', train_data='12'):
        pre_data(1, tr_file)
     
    else: # train 시
-       if train_data == '12':
-          
-       model_part(train_data, comment, last_file)
+       EJ = ExcelJoin(train_data)
+       EJ.ex_join()
+       model_part(train_data, comment)
 
 
     

@@ -5,7 +5,7 @@ save_path = "/home/cent/Documents/github/T-friend/process/"
     
 T = '계산서'
 
-class img(object):
+class ExcelJoin(object):
     def __init__(self, train_data):
         self.train_data = train_data
 
@@ -22,7 +22,7 @@ class img(object):
             df_2 = df_2.loc[:,["NO_BIZ_C", "NM_ITEM", "CD_ACCOUNT","NO_BIZ", "CD_INDUSTRY"]]
             df_1 = df_1.loc[:,["NO_BIZ_C", "NM_ITEM", "CD_ACCOUNT","NO_BIZ", "CD_INDUSTRY"]]
         
-        else :
+        elif self.train_data == '34':
         
             filename_1 = 'card_train_data_test_1.xlsx'
             filename_2 = 'card_train_data_test_2.xlsx'
@@ -135,7 +135,7 @@ class img(object):
         df_result = df_result.drop(['index'], axis=1)
         
         
-        if T == '계산서' :
+        if self.train_data == '12' :
             df_result.to_excel(save_path + '12_file.xlsx', 'w', encoding='utf-8')
-        elif T == '영수증' :
+        elif self.train_data == '34' :
             df_result.to_excel(save_path + '34_file.xlsx', 'w', encoding='utf-8')
