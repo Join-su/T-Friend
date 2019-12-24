@@ -19,7 +19,11 @@ class FileSeg():
 
         for i in range(len(df)):
             # print(df.loc[i,['CD_SCRP']].values)
-            if df.loc[i,['TP_BIZ_C']].isnull().values.any():df.loc[i,['TP_BIZ_C']]=0
+            if df.loc[i, ['CD_TRAN']].item() == 'home1in' or df.loc[i, ['CD_TRAN']].item() == 'home2in':
+                if df.loc[i, ['NM_ITEM']].isnull().values.any(): df.loc[i, ['NM_ITEM']] = 0
+            else :
+                if df.loc[i, ['TP_BIZ_C']].isnull().values.any(): df.loc[i, ['TP_BIZ_C']] = 0
+                    
             name = df.loc[i, ['CD_TRAN']].item()
             name_list = list(name)
             last_num = len(name_list) - 1
