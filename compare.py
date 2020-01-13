@@ -64,5 +64,7 @@ def comp(comend, excel_PATH,T,df_1, loca, e_name, cate, cate2=0):
 
     print(df.head())
     if comend == 'test':
-        df.to_excel(excel_PATH + e_name)
+        #df.to_excel(excel_PATH + e_name)
+        df.to_json(excel_PATH + e_name, orient='records', double_precision=15, default_handler=callable,force_ascii=False)
+
     return df

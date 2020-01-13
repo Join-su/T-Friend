@@ -1,6 +1,7 @@
 #import load_cnn
 #import load_rf
 from excel_join import ExcelJoin
+#from excel_join_part2 import ExChJson
 from load_cnn import CNN
 from load_rf import RF
 from RF_train import RF_train
@@ -22,20 +23,23 @@ from ApplyUTF import Utf8Apply
 import requests, json
 
 
-PATH = "/home/cent/Documents/github/T-friend/process/"
-excel_PATH = '/home/cent/Documents/github/T-friend/pre/'
-img_PATH = "/home/cent/Documents/github/T-friend/img/"
-path_json = '/home/cent/Documents/github/T-friend/json/'
-RES_save_path = '/T-friend_data/RES/'
-path_2 = "/home/cent/Documents/github/T-friend/"
+PATH = "./process/"
+excel_PATH = './pre/'
+img_PATH = "./img/"
+path_json = './json/'
+RES_save_path = '/T-friend_data/RES/dev/'
+RES_save_train_path = '/T-friend_data/TRAIN/res/'
+path_2 = "./"
 
 
-def pre_data(proc, name = ''):
+def pre_data(commend,proc, name = ''):
 
     ret = 0
 
     if proc == 0 :
-        path = '/T-friend_data/REQ/'  # 전달받은 자료 경로
+        path = '/T-friend_data/REQ/dev/'  # 전달받은 자료 경로
+        if commend != 'test':
+            path = '/T-friend_data/TRAIN/dev/'
 
         #file_list = os.listdir(path)
         #last_len  = len(file_list)-1
@@ -43,10 +47,10 @@ def pre_data(proc, name = ''):
 
         #name = file_list[last_len]
 
-        j = JsonToExcel(path,path_2, name, proc)
+        j = JsonToExcel(commend, path,path_2, name, proc)
         j.ToExecl()
         f = FileSeg()
-        f.file_seg(PATH, path_2)
+        f.file_seg(commend, PATH, path_2)
         f2 = FileSeg2()
         ret = f2.file_seg2(PATH)
 
@@ -72,17 +76,18 @@ def model_part(filename, comend, re_file='train'):
     filter_name = filter_name_list[0]
 
     if filename == '12':
-        filename = '12_file.xlsx'
+        filename = '12_file.json'
         filter_name = filter_name +'_12'
     elif filename == '34':
-        filename = '34_file.xlsx'
+        filename = '34_file.json'
         filter_name = filter_name + '_34'
     else :
-        filename = 'etc_file.xlsx'
+        filename = 'etc_file.json'
         filter_name = filter_name + '_etc'
 
     img_full_name = PATH + filename
-    df = pd.read_excel(img_full_name, encoding='utf-8', index_col=0)
+    #df = pd.read_excel(img_full_name, encoding='utf-8', index_col=0)
+    df = pd.read_json(img_full_name, orient='records')
 
     ### fearture에 품명이 있는지 검사(있으면 계산서, 없으면 영수증 취급)
     filename_spl = filename.split('_')
@@ -97,7 +102,7 @@ def model_part(filename, comend, re_file='train'):
     # for i in range(len(col_list)):
     #    if col_list[i] == '품명' : T = '계산서'
 
-    print(df.head())
+    print('12_file.json 확인 : ', df.head())
     ### 이미지화
     a = img(T, df, comend, excel_PATH, img_PATH)
     a.pre_img()
@@ -133,28 +138,38 @@ def model_part(filename, comend, re_file='train'):
         e.main_f_rf()
 
     ### 공제/불공제 예측 ###
-    if filename == '12_file.xlsx':
-        tax_filename = 'e_bill_2019_uniq.xlsx'
-    elif filename == '34_file.xlsx':
-        tax_filename = 'cash_train.xlsx'
-    elif filename == 'etc_file.xlsx':
-        tax_filename = 'etc.xlsx'
-    if comend != 'train':
+    #tax_filename = 'cash_train.xlsx'
+ 
+    if filename == '34_file.json':
+        tax_filename = 'cash_train.json'
+    elif filename == 'etc_file.json':
+        tax_filename = 'etc.json'
+    if comend != 'train' and filename != '12_file.json':
         f = tax(excel_PATH, tax_filename)
         f.tax_predict()
+    
+    '''
+    if comend != 'train' and filename == '34_file.xlsx':
+        tax_filename = 'cash_train.xlsx'
+        f = tax(excel_PATH, tax_filename)
+        f.tax_predict()
+    '''
 
-
-def toRES(name, etc):
+def toRES(commend, name, etc):
 
     r_path = RES_save_path + name
+    if commend != 'test':
+        r_path = RES_save_train_path + name
+        f = open(r_path, 'w')
+        f.close()
 
     c = Convert(path_json, excel_PATH, PATH)
     c.convert(etc)
     u = Utf8Apply(r_path, path_json)
     u.utf_app()
 
-def signal_in(tr_file):
-    url = "https://dev-tms.3friend.co.kr/api/notify"
+def signal_in(tr_file, sysPath):
+    url = sysPath
 
     payload = {"signal": tr_file}
     headers = {
@@ -173,15 +188,19 @@ def signal_in(tr_file):
 
     response = requests.request("POST", url, data=payload, headers=headers)
 
-def main(string, comment = 'test', train_data='12'):
+def main(systemName, string, comment = 'test'):
    #re_file = 'A_20190925173904.REQ'
    #tr_file = 'A_test.RES'
 
    #comment = 'test' # 'test' or 'train'
    #train_data = '12' # '12' or '34' or 'etc'
+   if systemName == "dev" :
+      sysPath = 'https://dev-tms.3friend.co.kr/api/notify'
+   elif systemName == "prod" :
+      sysPath = 'https://tms.3friend.co.kr/api/notify'
 
    if comment == 'test':
-       ret, last_file = pre_data(0,string)
+       ret, last_file = pre_data(comment,0,string)
 
        filter_name_list = last_file.split('.')
        tr_file = filter_name_list[0]+'.RES'
@@ -191,18 +210,35 @@ def main(string, comment = 'test', train_data='12'):
        if ret == 1 :
            model_part('etc', comment, last_file)
 
-       toRES(tr_file, ret)
+       toRES(comment, tr_file, ret)
 
-       #signal_in(tr_file)
+       signal_in(tr_file, sysPath)
 
        pre_data(1, tr_file)
-    
+   # api 
    else: # train 시
-       EJ = ExcelJoin(train_data)
+       EJ = ExcelJoin(string)
        EJ.ex_join()
-       model_part(train_data, comment)
+       #ExChJson()
+ 
+       ret, last_file = pre_data(comment,0,string)
 
+       model_part('12', comment)
+       model_part('34', comment)
+
+       filter_name_list = last_file.split('.')
+       tr_file = filter_name_list[0]+'.RES'
+
+       toRES(comment, tr_file, ret)
+
+       signal_in(tr_file, sysPath)
 
     
 if __name__ == "__main__" :
-   main(sys.argv[1], sys.argv[2], sys.argv[3]) 
+
+#   try :
+#      main(sys.argv[1], sys.argv[2], sys.argv[3])
+#   except IndexError :
+#      main(sys.argv[1], sys.argv[2])
+   main(sys.argv[1], sys.argv[2], sys.argv[3])
+

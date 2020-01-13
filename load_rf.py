@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle
 import numpy as np
+import json
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder, LabelBinarizer
@@ -22,11 +23,12 @@ class RF(object):
 
     def main_RF(self):
         if self.T == '계산서':
-            raw_DATA = 'e_bill_2019_uniq.xlsx'
+            raw_DATA = 'e_bill_2019_uniq.json'
             save_file = 'new_RF_model.sav'
             name = 'NO_BIZ_C'
             name2 = 'NO_BIZ'
-            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            #train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            train = pd.read_json(self.excel_PATH + raw_DATA,orient='records',dtype=False)
             #train.rename(columns={"NO_BIZ": "사업자등록번호"}, inplace=True)
             #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
             #train.rename(columns={"CD_INDUSTRY": "업종코드"}, inplace=True)
@@ -45,30 +47,34 @@ class RF(object):
             '''
 
         elif self.T == '영수증':
-            raw_DATA = 'cash_train.xlsx'
+            raw_DATA = 'cash_train.json'
             save_file = 'cash_train_model.sav'
             name = 'NO_BIZ_C'
             name2 = 'NO_BIZ'
-            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            #train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            train = pd.read_json(self.excel_PATH + raw_DATA,orient='records',dtype=False)
+            #train.rename(columns={"NO_BIZ": "사업자등록번호"}, inplace=True)
             #train.rename(columns={"NO_BIZ": "회사등록번호"}, inplace=True)
             #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
             #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
             X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
 
         elif self.T == '기타':
-            raw_DATA = 'etc.xlsx'
+            raw_DATA = 'etc.json'
             save_file = 'cash_train_model.sav'
             name = 'NO_BIZ_C'
             name2 = 'NO_BIZ'
-            train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            #train = pd.read_excel(self.excel_PATH + raw_DATA, encoding='utf-8', sheet_name='Sheet1', index_col=0)
+            train = pd.read_json(self.excel_PATH + raw_DATA,orient='records',dtype=False)
+            #train.rename(columns={"NO_BIZ": "사업자등록번호"}, inplace=True)
             #train.rename(columns={"NO_BIZ": "회사등록번호"}, inplace=True)
             #train.rename(columns={"NO_BIZ_C_new": "NO_BIZ_C"}, inplace=True)
             #train.rename(columns={"CD_ACCOUNT": "계정과목"}, inplace=True)
 
-            #X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
-            X = train.loc[:, ['NO_BIZ_C', 'NO_BIZ', 'cc']].copy()
+            X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
+            #X = train.loc[:, ['NO_BIZ_C', 'NO_BIZ', 'cc']].copy()
             #X = train.loc[:, ['NO_BIZ', 'cc']].copy()
-        #print(X.head())
+        print(X.head())
 
 
         try :###실전에서는 계정과목 존재 X
@@ -77,7 +83,7 @@ class RF(object):
             index = X_label['CD_ACCOUNT'].str.split(' ', n=1, expand=True)
             lists = list(index)
             Y = index[0].copy()
-        except AttributeError:
+        except :
             Y = train.loc[:, ['CD_ACCOUNT']].copy()
 
         try :
@@ -88,7 +94,7 @@ class RF(object):
             X = pd.concat([X, num[name]], axis=1)
             #print('head',X.head())
             #X = X.rename(columns={'사업자등록번호':'거래처번호'})
-        except AttributeError :
+        except  :
             X['NO_BIZ_C_new'] = X[name]
             del(X[name])
 
@@ -102,7 +108,7 @@ class RF(object):
             del (X[name2])
             X = pd.concat([X, num[name2]], axis=1)
             #X = X.rename(columns={'사업자등록번호':'거래처번호'})
-        except AttributeError :
+        except :
             X['NO_BIZ_new'] = X[name2]
             del(X[name2])
 
@@ -113,10 +119,10 @@ class RF(object):
         #print(X.head())
 
 
-        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=0)
+        #X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=0)
 
 
-        loaded_model = pickle.load(open('/home/cent/Documents/github/save_file/' + save_file, 'rb'))
+        loaded_model = pickle.load(open('./save_file/' + save_file, 'rb'))
 
 
         print(X.head())
@@ -138,7 +144,8 @@ class RF(object):
             pre_val = np.argmax(pre[i])
             train.loc[i, ['예측정도']] = pre[i][pre_val]
 
-        train.to_excel(self.excel_PATH + raw_DATA)
+        #train.to_excel(self.excel_PATH + raw_DATA)
+        train.to_json(self.excel_PATH + raw_DATA,orient='records', double_precision=15, default_handler=callable,force_ascii=False)
 
         # print('pre_len : ', len(pre[0]))
         # print(pre[1])

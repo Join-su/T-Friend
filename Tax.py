@@ -12,8 +12,9 @@ class tax(object):
 
         # filename = 'e_bill_2019_uniq.xlsx'
         # filename = 'cash_train.xlsx'
-
-        df = pd.read_excel(self.PATH + self.filename, encoding='utf-8', index_col=0)
+        
+        df = pd.read_json(self.PATH + self.filename, orient = 'records', dtype=False)
+        #df = pd.read_excel(self.PATH + self.filename, encoding='utf-8', index_col=0)
 
         txt_812 = ['항공', '여객기', '버스', '운송', '택시', '이비카드', '한국스마트']
         txt_252 = ['금융결제원']
@@ -21,7 +22,25 @@ class tax(object):
 
         count = 0
 
+
+        
+
         for i in range(len(df)):
+
+            if df.loc[i, ['CD_TRAN']].item() == 'home3in' : 
+                df.loc[i,['CD_DEDU']] = ''
+                break
+
+            if df.loc[i, ['CD_TRAN']].item() == 'cardetcin' : 
+                df.loc[i,['CD_DEDU']] = '0'
+                break
+
+            if df.loc[i, ['CD_TRAN']].item() == 'cargoin' : 
+                df.loc[i,['CD_DEDU']] = '0'
+                break
+
+            if self.filename == 'etc.json' : break
+
             if df.loc[i, ['TP_BIZ_C']].item() == 1 or df.loc[i, ['TP_BIZ_C']].item() == 3:
                 #print('1, 3')
                 if df.loc[i, ['CD_ACCOUNT']].item() == 813:
@@ -79,4 +98,4 @@ class tax(object):
 
         print(df.head())
         print(count)
-        df.to_excel(self.PATH + self.filename, 'w', encoding='utf-8')
+        df.to_json(self.PATH + self.filename,orient='records', double_precision=15, default_handler=callable,force_ascii=False)

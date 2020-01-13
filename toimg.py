@@ -89,11 +89,11 @@ class img(object):
         name2 = 'NO_BIZ_C'
         target = 'CD_ACCOUNT'
         if self.T == '계산서' :
-            e_name = 'e_bill_2019_uniq.xlsx'
+            e_name = 'e_bill_2019_uniq.json'
         elif self.T == '영수증':
-            e_name = 'cash_train.xlsx'
+            e_name = 'cash_train.json'
         elif self.T == '기타' :
-            e_name = 'etc.xlsx'
+            e_name = 'etc.json'
         df = comp(self.comend,self.excel_PATH, self.T, self.df, target, e_name, name, name2)
 
         # df = comp(df,target, 'e_bill_2019_uniq.xlsx',name)

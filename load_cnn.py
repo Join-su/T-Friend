@@ -3,7 +3,7 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, Activation
 from PIL import Image
 #import win32com.client
-
+import json
 import numpy as np
 import pandas as pd
 import os
@@ -140,8 +140,8 @@ class CNN(object):
             #teY = self.dence_to_one_hot(teY, labels_count)
 
             if self.T == '계산서': EPOCH = 400
-            else : EPOCH = 800
-            BATCH_SIZE = 128
+            else : EPOCH = 200
+            BATCH_SIZE = 5 #128
             VERBOSE = 2
 
             model = Sequential()
@@ -162,7 +162,7 @@ class CNN(object):
 
             model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-            MODEL_DIR = "/home/cent/Documents/github/save_file/"
+            MODEL_DIR = "./save_file/"
             if not os.path.exists(MODEL_DIR):
                 os.mkdir(MODEL_DIR)
 
@@ -222,9 +222,9 @@ class CNN(object):
 
             #
             if self.T == '계산서':
-                model = load_model('/home/cent/Documents/github/save_file/categori_update_new.h5')
+                model = load_model('./save_file/categori_update_new.h5')
             else:
-                model = load_model('/home/cent/Documents/github/save_file/categori_update_cash.h5')
+                model = load_model('./save_file/categori_update_cash.h5')
 
             '''
             emnist1_acc = model.evaluate(teX, teY)
@@ -245,15 +245,18 @@ class CNN(object):
             count = 0
             # print(predict)
             if self.T == '계산서' :
-                raw_DATA = 'e_bill_2019_uniq.xlsx'
+                raw_DATA = 'e_bill_2019_uniq.json'
 
             elif self.T == '영수증':
-                raw_DATA = 'cash_train.xlsx'
+                raw_DATA = 'cash_train.json'
 
             elif self.T == '기타' :
-                raw_DATA = 'etc.xlsx'
+                raw_DATA = 'etc.json'
 
-            data = pd.read_excel(self.img_full_name, encoding='utf-8', index_col=0)
+            #with open(self.img_full_name) as f:
+            #    json_data = json.load(f)
+            #data = pd.DataFrame.from_dict(json_data, orient='columns')
+            data = pd.read_json(self.img_full_name, orient='records',dtype=False)
             data['cc'] = 0
             data['predict'] = 0
             for i, pre in enumerate(predict):
@@ -265,7 +268,9 @@ class CNN(object):
                 # print(labels_val[pre])
 
 
-            data.to_excel(self.excel_PATH + raw_DATA)
+            #data.to_excel(self.excel_PATH + raw_DATA)
+            data.to_json(self.excel_PATH + raw_DATA , orient='records', double_precision=15, default_handler=callable,force_ascii=False)
+
 
             # model = load_model('./model_ResNet/model_num-%s.h5' % num)
 

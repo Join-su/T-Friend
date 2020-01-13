@@ -4,15 +4,19 @@ import pandas as pd
 
 
 class JsonToExcel(object):
-    def __init__(self, path, path_2, name, proc):
+    def __init__(self, commend, path, path_2, name, proc):
         self.path = path
         self.name = name
         self.proc = proc
         self.path_2 = path_2
+        self.commend = commend
 
     def ToExecl(self):
 
         file = self.path + self.name
+        if self.commend != 'test' :
+            #file = self.path + 'A_20200107171156.REQ'
+            file = self.path + 'total.REQ'
         # data = open(file)
         # contents = json.load(data)
 
@@ -42,16 +46,21 @@ class JsonToExcel(object):
                 print('일반')
                 pd_data['TP_BIZ_C'] = ''
 
-            PATH = '/home/cent/Documents/github/T-friend/'
+            PATH = './'
 
             if self.proc == 0:
-                pd_data['CD_ACCOUNT'] = ''
+                if self.commend == 'test':
+                    pd_data['CD_ACCOUNT'] = ''
                 pd_data['CD_ACCOUNT_R'] = ''
                 pd_data['CD_DEDU'] = ''
-                pd_data.to_excel(PATH + 'test_file.xlsx', 'w', encoding='utf-8')
+                pd_data.to_json(PATH + 'test_file.json', orient='records', double_precision=15, default_handler=callable,force_ascii=False)
+
+                #pd_data.to_excel(PATH + 'test_file.xlsx', 'w', encoding='utf-8')
             elif self.proc == 1:
                 print("final : ",pd_data.head())
-                pd_data.to_excel(PATH + 'result_file.xlsx', 'w', encoding='utf-8')
+                pd_data.to_json(PATH + 'result_file.json', orient='records', double_precision=15, default_handler=callable,force_ascii=False)
+
+                #pd_data.to_excel(PATH + 'result_file.xlsx', 'w', encoding='utf-8')
 
 
             # print(pd_data)

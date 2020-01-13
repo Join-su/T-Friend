@@ -1,7 +1,8 @@
 import pandas as pd
+import json
     
-path = "/home/cent/Documents/github/T-friend/train_data/"
-save_path = "/home/cent/Documents/github/T-friend/process/"
+path = "/T-friend_data/TRAIN/dev/"
+save_path = "./process/"
     
 T = '계산서'
 
@@ -10,11 +11,36 @@ class ExcelJoin(object):
         self.train_data = train_data
 
         
-    def ex_join(self) :    
+    def ex_join(self) :
+
+        filename_1 = 'total.REQ'
+        filename_2 = self.train_data
+
+        file_1 = path + filename_1
+        file_2 = path + filename_2
+
+        df_1 = ''
+        df_2 = ''
+
+        with open(file_1, encoding='UTF8') as open_json:
+            contents = pd.read_json(open_json, orient='records',dtype=False)
+            df_1 = contents
+
+        with open(file_2, encoding='UTF8') as open_json:
+            contents = pd.read_json(open_json, orient='records',dtype=False)
+            df_2 = contents
+
+        #df_1 = pd.read_excel(path + filename_1, encoding='utf-8', index_col=0)
+        #df_2 = pd.read_excel(path + filename_2, encoding='utf-8', index_col=0)
+
+        df_2 = df_2.loc[:,["NO_BIZ_C", "NM_ITEM", "CD_ACCOUNT","NO_BIZ", "CD_INDUSTRY","CD_TRAN", "TP_BIZ_C"]]
+        df_1 = df_1.loc[:,["NO_BIZ_C", "NM_ITEM", "CD_ACCOUNT","NO_BIZ", "CD_INDUSTRY","CD_TRAN", "TP_BIZ_C"]]
+
+        '''    
         if self.train_data == '12' :
         
-            filename_1 = 'e_train_data_test_1.xlsx'
-            filename_2 = 'e_train_data_test_2.xlsx'
+            filename_1 = 'e_train_data.xlsx'
+            filename_2 = '12_file.xlsx'
         
             df_1 = pd.read_excel(path + filename_1, encoding='utf-8', index_col=0)
             df_2 = pd.read_excel(path + filename_2, encoding='utf-8', index_col=0)
@@ -24,14 +50,15 @@ class ExcelJoin(object):
         
         elif self.train_data == '34':
         
-            filename_1 = 'card_train_data_test_1.xlsx'
-            filename_2 = 'card_train_data_test_2.xlsx'
+            filename_1 = 'card_train_data.xlsx'
+            filename_2 = '34_file.xlsx'
         
             df_1 = pd.read_excel(path + filename_1, encoding='utf-8', index_col=0)
             df_2 = pd.read_excel(path + filename_2, encoding='utf-8', index_col=0)
         
             df_2 = df_2.loc[:, ["NO_BIZ_C", "TP_BIZ_C", "CD_ACCOUNT", "NO_BIZ"]]
             df_1 = df_1.loc[:, ["NO_BIZ_C", "TP_BIZ_C", "CD_ACCOUNT", "NO_BIZ"]]
+        '''
         buyer = "NO_BIZ"
         seller = "NO_BIZ_C"
         
@@ -134,8 +161,22 @@ class ExcelJoin(object):
         df_result = df_result.reset_index()
         df_result = df_result.drop(['index'], axis=1)
         
-        
+        '''
         if self.train_data == '12' :
             df_result.to_excel(save_path + '12_file.xlsx', 'w', encoding='utf-8')
         elif self.train_data == '34' :
             df_result.to_excel(save_path + '34_file.xlsx', 'w', encoding='utf-8')
+        '''
+
+        df_result.to_json(path + 'total.json', orient='records', double_precision=15, default_handler=callable,force_ascii=False)
+        
+        file = path + 'total.json'
+
+        with open(file) as json_file:
+            data = json.load(json_file)
+            #print(data)
+            with open(path + 'total.REQ', 'w', encoding='UTF8') as write_file:
+                write_file.write(json.dumps(data, ensure_ascii=False))
+
+        
+

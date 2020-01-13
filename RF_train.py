@@ -28,19 +28,21 @@ class RF_train(object):
 
     def main_RF_train(self):
         if self.T == '계산서':
-            new_data = 'e_bill_2019_uniq.xlsx'
+            new_data = 'e_bill_2019_uniq.json'
             filename = 'new_RF_model.sav'
 
-            train = pd.read_excel(self.excel_PATH + new_data, encoding='utf-8')
+            #train = pd.read_excel(self.excel_PATH + new_data, encoding='utf-8')
+            train = pd.read_json(self.excel_PATH + new_data, orient='records',dtype=False)
 
             #X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY', 'TP_BIZ_C','NO_BIZ', 'cc']].copy()
             X = train.loc[:, ['NO_BIZ_C', 'CD_INDUSTRY','NO_BIZ', 'cc']].copy()
             X_label = train.loc[:, ['CD_ACCOUNT']].copy()
         else :
-            new_data = 'cash_train.xlsx'
+            new_data = 'cash_train.json'
             filename = 'cash_train_model.sav'
 
-            train = pd.read_excel(self.excel_PATH + new_data, encoding='utf-8')
+            #train = pd.read_excel(self.excel_PATH + new_data, encoding='utf-8')
+            train = pd.read_json(self.excel_PATH + new_data, orient='records',dtype=False)
 
             X = train.loc[:, ['NO_BIZ_C', 'TP_BIZ_C', 'NO_BIZ', 'cc']].copy()
             X_label = train.loc[:, ['CD_ACCOUNT']].copy()
@@ -129,7 +131,7 @@ class RF_train(object):
         '''
 
         fout = open(code_PATH + 'result.txt', 'a')
-        pickle.dump(model, open('/home/cent/Documents/github/save_file/' + filename, 'wb'))
+        pickle.dump(model, open('./save_file/' + filename, 'wb'))
         # model = DecisionTreeClassifier(criterion='entropy', max_depth=3, min_samples_leaf=5).fit(X_train, y_train)
         # accuracy = accuracy_score(y_test, model.predict(X_test))
 
